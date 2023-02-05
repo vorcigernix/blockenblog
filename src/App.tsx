@@ -68,10 +68,8 @@ function App() {
     <>
       <section>
         <div className="container max-w-6xl p-6 mx-auto space-y-6 sm:space-y-12">
-          <a
-            rel="noopener noreferrer"
-            href="#"
-            className="block max-w-sm gap-3 mx-auto sm:max-w-full group hover:no-underline focus:no-underline lg:grid lg:grid-cols-12 dark:dark:bg-zinc-900"
+          <div
+            className="block max-w-sm gap-3 mx-auto sm:max-w-full lg:grid lg:grid-cols-12 dark:dark:bg-zinc-900"
           >
             <img
               src="https://images.unsplash.com/photo-1590492123569-42905d752c86?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80"
@@ -93,7 +91,7 @@ function App() {
                 Nelson Mandela
               </p>
             </div>
-          </a>
+          </div>
           <div className="grid justify-center grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {blogPosts &&
               blogPosts.map((post, i) => (
