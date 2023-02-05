@@ -8,7 +8,7 @@ import { PublicTree } from "webnative/fs/v1/PublicTree";
 
 import { blogCard } from "./components/blogCard";
 // move to env
-const USERNAME_TO_LOOKUP = "Adam Sobotka";
+const USERNAME_TO_LOOKUP = "mmkooe7pj6p6avi66mwq5n63muuwjyfm";
 
 function App() {
   const [blogPosts, setBlogPosts] = useState();
