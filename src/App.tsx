@@ -2,19 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import * as wn from "webnative";
 
 import { getSimpleLinks } from "webnative/fs/protocol/basic";
-
-import { PublicFile } from "webnative/fs/v1/PublicFile";
+import { Link } from "webnative/fs/types";
+//import { PublicFile } from "webnative/fs/v1/PublicFile";
 import { PublicTree } from "webnative/fs/v1/PublicTree";
-
-import { blogCard } from "./components/blogCard";
+import { BlogCard, type CardProps } from "./components/BlogCard";
 // move to env
 const USERNAME_TO_LOOKUP = "mmkooe7pj6p6avi66mwq5n63muuwjyfm";
 
 function App() {
-  const [blogPosts, setBlogPosts] = useState();
+  const [blogPosts, setBlogPosts] = useState<CardProps[]>([]);
   async function loadPosts() {
     const program = await wn.program({
-      // move to env
       namespace: { creator: "Blockenberg", name: "BBG" },
     });
 
@@ -24,21 +22,48 @@ function App() {
     if (!cid) return;
     const publicCid = (await getSimpleLinks(depot, cid)).public.cid as wn.CID;
     const publicTree = await PublicTree.fromCID(depot, reference, publicCid);
+    //console.log(publicTree);
 
-    const unsplashDir = await publicTree.get(
-      wn.path.unwrap(wn.path.directory("Unsplash")), // [ "Unsplash" ]
+    const publicDocDir = await publicTree.get(
+      wn.path.unwrap(wn.path.directory("documents")),
     );
-    if (!unsplashDir) return;
-    const links = Object.values(
+    const publicPicDir = await publicTree.get(
+      wn.path.unwrap(wn.path.directory("gallery")),
+    );
+
+    //console.log(publicPicDir);
+    if (!publicDocDir) return;
+    const links: Link[] = Object.values(
       //@ts-expect-error
-      await unsplashDir.ls([]),
+      await publicDocDir.ls([]),
     );
-    console.log(links);
+
+    const posts = await Promise.all(
+      links.map(async (post) => {
+        //@ts-expect-error
+        const file = await publicDocDir.get([post.name]);
+        //const file = await PublicFile.fromCID(depot, post.cid);
+        const filecontent = new TextDecoder().decode(file.content);
+        const filecontentjson = JSON.parse(filecontent);
+        const imagejson = JSON.parse(filecontentjson.image);
+        //console.log(filecontentjson.header, imagejson.name);
+        //@ts-expect-error
+        const image = await publicPicDir.get([imagejson.name]);
+        //console.log(image);
+
+        // Picture `src`
+        const url = URL.createObjectURL(new Blob([image.content]));
+        console.log(url);
+
+        return { post: filecontentjson, image: url };
+      }),
+    );
+    console.log(posts);
+    setBlogPosts(posts);
   }
   useEffect(() => {
-    //console.log("useEffect");
     loadPosts();
-  }, [blogPosts]);
+  }, []);
   return (
     <>
       <section>
@@ -70,7 +95,10 @@ function App() {
             </div>
           </a>
           <div className="grid justify-center grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {blogCard}
+            {blogPosts &&
+              blogPosts.map((post, i) => (
+                <BlogCard post={post.post} image={post.image} key={i} />
+              ))}
           </div>
           <div className="justify-center hidden">
             <button
