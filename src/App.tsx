@@ -8,7 +8,7 @@ import { PublicTree } from "webnative/fs/v1/PublicTree";
 
 import { blogCard } from "./components/blogCard";
 // move to env
-const USERNAME_TO_LOOKUP = "Adam Sobotka#did:key:z13V3Sog2YaUKhdGCmgx9UZuW1o1ShFJYc6DvGYe7NTt689NoL36k5XCatwtBfq4q4rqmmsGBhRwmsRiuePthN7uwDRPvbanMzYaFvxVjWhV5ehJx8fwohpCtHkynPXmQsAYw26hk12nu3vA9nRZe4qqaTRrySrfcouXXhdA2uPrFscRdc9DHjr8hY1CmzHxyj5DuujbhMKz52tL9UkqW6UTALM9CEqi9rfhxFg7i4dsECbg1iR76XjqmZ9nLxPFws7tkV89yTLihS27P3EyE77vtS6X5TmPyt9ZzJJUJagfaNUfCUN2qPfcZm2jYMo7c7YPACwoPkfha5DGfgYpAa8oTD7GGot1WSD8SiviybtiT2BfpnYSoXvJsMjtTVJomtJLbCUiuEb4SSS1kNyBZep";
+const USERNAME_TO_LOOKUP = "Adam Sobotka";
 
 function App() {
   const [blogPosts, setBlogPosts] = useState();
