@@ -1,69 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import * as wn from "webnative";
-
-import { getSimpleLinks } from "webnative/fs/protocol/basic";
-import { Link } from "webnative/fs/types";
-//import { PublicFile } from "webnative/fs/v1/PublicFile";
-import { PublicTree } from "webnative/fs/v1/PublicTree";
-import { BlogCard, type CardProps } from "./components/BlogCard";
+import { Suspense, lazy } from "react";
+const BlogList = lazy(() => import('./components/BlogList'));
+//import { BlogList } from "./components/BlogList";
 // move to env & change to your token
 const USERNAME_TO_LOOKUP = "mmkooe7pj6p6avi66mwq5n63muuwjyfm";
 
+const Loading = () => {
+  return (
+    <>
+      <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin dark:border-gray-50 border-gray-800">
+      </div>
+    </>
+  );
+};
+
 function App() {
-  const [blogPosts, setBlogPosts] = useState<CardProps[]>([]);
-  async function loadPosts() {
-    const program = await wn.program({
-      namespace: { creator: "Blockenberg", name: "BBG" },
-    });
-
-    const { depot, reference } = program.components;
-
-    const cid = await reference.dataRoot.lookup(USERNAME_TO_LOOKUP);
-    if (!cid) return;
-    const publicCid = (await getSimpleLinks(depot, cid)).public.cid as wn.CID;
-    const publicTree = await PublicTree.fromCID(depot, reference, publicCid);
-    //console.log(publicTree);
-
-    const publicDocDir = await publicTree.get(
-      wn.path.unwrap(wn.path.directory("documents")),
-    );
-    const publicPicDir = await publicTree.get(
-      wn.path.unwrap(wn.path.directory("gallery")),
-    );
-
-    //console.log(publicPicDir);
-    if (!publicDocDir) return;
-    const links: Link[] = Object.values(
-      //@ts-expect-error
-      await publicDocDir.ls([]),
-    );
-
-    const posts = await Promise.all(
-      links.map(async (post) => {
-        //@ts-expect-error
-        const file = await publicDocDir.get([post.name]);
-        //const file = await PublicFile.fromCID(depot, post.cid);
-        const filecontent = new TextDecoder().decode(file.content);
-        const filecontentjson = JSON.parse(filecontent);
-        const imagejson = JSON.parse(filecontentjson.image);
-        //console.log(filecontentjson.header, imagejson.name);
-        //@ts-expect-error
-        const image = await publicPicDir.get([imagejson.name]);
-        //console.log(image);
-
-        // Picture `src`
-        const url = URL.createObjectURL(new Blob([image.content]));
-        console.log(url);
-
-        return { post: filecontentjson, image: url };
-      }),
-    );
-    console.log(posts);
-    setBlogPosts(posts);
-  }
-  useEffect(() => {
-    loadPosts();
-  }, []);
   return (
     <>
       <section>
@@ -91,10 +41,9 @@ function App() {
             </div>
           </div>
           <div className="grid justify-center grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {blogPosts &&
-              blogPosts.map((post, i) => (
-                <BlogCard post={post.post} image={post.image} key={i} />
-              ))}
+            <Suspense fallback={<Loading />}>
+              <BlogList token={USERNAME_TO_LOOKUP} />
+            </Suspense>
           </div>
           <div className="justify-center hidden">
             <button
