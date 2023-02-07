@@ -1,15 +1,18 @@
-import { Suspense, lazy } from "react";
-const BlogList = lazy(() => import('./components/BlogList'));
-//import { BlogList } from "./components/BlogList";
-// move to env & change to your token
+import { lazy, Suspense } from "react";
+const BlogList = lazy(() => import("./components/BlogList"));
+
 const USERNAME_TO_LOOKUP = "mmkooe7pj6p6avi66mwq5n63muuwjyfm";
 
 const Loading = () => {
   return (
-    <>
-      <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin dark:border-gray-50 border-gray-800">
+    <div className="w-full space-x-3 flex justify-center items-center sm:col-span-2 lg:col-span-3">
+      <div className="w-4 h-4 rounded-full animate-pulse dark:bg-gray-600 bg-gray-300">
       </div>
-    </>
+      <div className="w-4 h-4 rounded-full animate-pulse dark:bg-gray-600 bg-gray-300">
+      </div>
+      <div className="w-4 h-4 rounded-full animate-pulse dark:bg-gray-600 bg-gray-300">
+      </div>
+    </div>
   );
 };
 

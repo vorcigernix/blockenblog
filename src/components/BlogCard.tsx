@@ -1,8 +1,17 @@
 import { useState } from "react";
-export type CardProps = { post: any; image: string };
+export type CardProps = { post: any; image: string; updated: number };
 
 function createMarkup(markup: string) {
   return { __html: markup };
+}
+
+function updateDate(datenum: number) {
+  return new Date(datenum).toLocaleDateString("en-GB", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 export const BlogCard = (props: CardProps) => {
@@ -30,7 +39,7 @@ export const BlogCard = (props: CardProps) => {
             {decodeURI(props.post.header)}
           </h3>
           <span className="text-xs dark:dark:text-gray-400">
-            January 21, 2021
+            {updateDate(props.post.updated)}
           </span>
           <p
             dangerouslySetInnerHTML={createMarkup(props.post.content)}
