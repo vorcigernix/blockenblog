@@ -6,6 +6,7 @@ function createMarkup(markup: string) {
 }
 
 function updateDate(datenum: number) {
+  //console.log(datenum);
   return new Date(datenum).toLocaleDateString("en-GB", {
     weekday: "long",
     year: "numeric",
@@ -39,7 +40,7 @@ export const BlogCard = (props: CardProps) => {
             {decodeURI(props.post.header)}
           </h3>
           <span className="text-xs dark:dark:text-gray-400">
-            {updateDate(props.post.updated)}
+            {updateDate(props.updated)}
           </span>
           <p
             dangerouslySetInnerHTML={createMarkup(props.post.content)}
